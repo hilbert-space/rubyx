@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+def abort
+  puts 'Usage: rubyx <file> [arguments]'
+  exit 1
+end
+
+filename = ARGV.shift || ''
+abort if filename.empty?
+
+filename = File.absolute_path(filename)
+
+unless File.exist?(filename)
+  puts 'The file does not exist.'
+  exit 1
+end
+
+lines = File.readlines(filename)
+previous = 0
+
+trace = Proc.new do |event, file, current|
+  if event == 'line' && file == filename && current > previous
+    (previous..(current - 1)).each do |i|
+      puts "+ #{lines[i]}"
+    end
+    previous = current
+  end
+end
+
+set_trace_func(trace)
+require filename
