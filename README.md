@@ -1,4 +1,4 @@
-# Ruby X
+# Ruby X [![Gem Version](https://badge.fury.io/rb/rubyx.svg)](http://badge.fury.io/rb/rubyx)
 
 A tool to run a Ruby script while showing the executed command, just like
 `bash -x`.
