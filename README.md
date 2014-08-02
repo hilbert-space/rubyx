@@ -10,17 +10,25 @@ $ gem install rubyx
 
 ## Usage
 
-```bash
-$ rubyx file.rb
+```
+$ rubyx -h
+Usage: rubyx [options] <file> -- [arguments]
+
+Options:
+    -i PREFIX            Set prefix for source code (default: "")
+    -o PREFIX            Set prefix for standard output (default: "# => ")
+    -h                   Show this message
 ```
 
 ## Example
 
-In `example.rb`:
+```
+$ rubyx input.rb > output.rb
+```
+
+In `input.rb`:
 
 ```ruby
-#!/usr/bin/env ruby
-
 def say
   puts 'Hello!'
 end
@@ -30,21 +38,18 @@ say
 puts 'Bye!'
 ```
 
-In terminal:
+In `output.rb`:
 
-```
-$ rubyx example.rb
-+ #!/usr/bin/env ruby
-+
-+ def say
-+   puts 'Hello!'
-+ end
-+
-+ say
-Hello!
-+
-+ puts 'Bye!'
-Bye!
+```ruby
+def say
+  puts 'Hello!'
+end
+
+say
+# => Hello!
+
+puts 'Bye!'
+# => Bye!
 ```
 
 ## Contributing
