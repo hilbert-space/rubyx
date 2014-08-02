@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Ivan Ukhov']
   spec.email         = ['ivan.ukhov@gmail.com']
   spec.summary       = 'A tool to run a Ruby script while showing the ' \
-                       'executed commands.'
+                       'executed lines of code.'
   spec.description   = spec.summary
   spec.homepage      = 'https://github.com/IvanUkhov/rubyx'
   spec.license       = 'MIT'

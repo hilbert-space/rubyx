@@ -1,7 +1,6 @@
-# Ruby X [![Gem Version](https://badge.fury.io/rb/rubyx.svg)](http://badge.fury.io/rb/rubyx)
+# Rubyx [![Gem Version](https://badge.fury.io/rb/rubyx.svg)](http://badge.fury.io/rb/rubyx)
 
-A tool to run a Ruby script while showing the executed command, just like
-`bash -x`.
+A tool to run a Ruby script while showing the executed lines of code.
 
 ## Installation
 
@@ -13,6 +12,39 @@ $ gem install rubyx
 
 ```bash
 $ rubyx file.rb
+```
+
+## Example
+
+In `example.rb`:
+
+```ruby
+#!/usr/bin/env ruby
+
+def say
+  puts 'Hello!'
+end
+
+say
+
+puts 'Bye!'
+```
+
+In terminal:
+
+```
+$ rubyx example.rb
++ #!/usr/bin/env ruby
++
++ def say
++   puts 'Hello!'
++ end
++
++ say
+Hello!
++
++ puts 'Bye!'
+Bye!
 ```
 
 ## Contributing
