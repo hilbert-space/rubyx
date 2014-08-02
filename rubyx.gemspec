@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'rubyx'
-  spec.version       = '0.0.1'
+  spec.version       = '0.0.2'
   spec.authors       = ['Ivan Ukhov']
   spec.email         = ['ivan.ukhov@gmail.com']
   spec.summary       = 'A tool to run a Ruby script while showing the ' \
