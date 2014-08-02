@@ -22,7 +22,7 @@ Options:
 
 ## Example
 
-```
+```bash
 $ rubyx input.rb > output.rb
 ```
 
