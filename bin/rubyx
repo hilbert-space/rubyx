@@ -1,31 +1,91 @@
 #!/usr/bin/env ruby
 
-def abort
-  puts 'Usage: rubyx <file> [arguments]'
-  exit 1
-end
+require 'tempfile'
+require 'optparse'
 
-filename = ARGV.shift || ''
-abort if filename.empty?
+iprefix = ''
+oprefix = '# => '
 
-filename = File.absolute_path(filename)
+parser = OptionParser.new(nil, 20) do |o|
+  o.banner = 'Usage: rubyx [options] <file> -- [arguments]'
 
-unless File.exist?(filename)
-  puts 'The file does not exist.'
-  exit 1
-end
+  o.separator ''
+  o.separator 'Options:'
 
-lines = File.readlines(filename)
-previous = 0
+  o.on('-i PREFIX', %{Set prefix for source code (default: "#{iprefix}")}) do |value|
+    iprefix = value
+  end
 
-trace = Proc.new do |event, file, current|
-  if event == 'line' && file == filename && current > previous
-    (previous..(current - 1)).each do |i|
-      puts "+ #{lines[i]}"
-    end
-    previous = current
+  o.on('-o PREFIX', %{Set prefix for standard output (default: "#{oprefix}")}) do |value|
+    oprefix = value
+  end
+
+  o.on_tail('-h', 'Show this message') do
+    puts o
+    exit
   end
 end
 
-set_trace_func(trace)
-require filename
+begin
+  parser.parse!
+rescue OptionParser::InvalidOption
+  puts parser
+  exit 1
+end
+
+def abort(message)
+  puts message
+  exit 1
+end
+
+def capture(stream)
+  original = stream.dup
+  surrogate = Tempfile.new('rubyx')
+  stream.reopen(surrogate)
+
+  yield
+
+  stream.rewind
+  surrogate.readlines
+ensure
+  surrogate.close
+  surrogate.unlink
+  stream.reopen(original)
+end
+
+def trace(handler)
+  set_trace_func(handler)
+  yield
+ensure
+  set_trace_func(nil)
+end
+
+filename = ARGV.shift || ''
+abort(parser) if filename.empty?
+
+filename = File.absolute_path(filename)
+abort('The file does not exist.') unless File.exist?(filename)
+
+tag = Random.new_seed
+last_position = 0
+
+handler = Proc.new do |event, source, position|
+  if event == 'line' && source == filename && position > last_position
+    (last_position..(position - 1)).each { |i| puts "#{tag}#{i}" }
+    last_position = position
+  end
+end
+
+source = File.readlines(filename)
+output = capture($stdout) { trace(handler) { load(filename) } }
+
+output.map! do |line|
+  if line =~ /^#{tag}(?<position>\d+)$/
+    line = source[Regexp.last_match(:position).to_i]
+    "#{iprefix}#{line}"
+  else
+    "#{oprefix}#{line}"
+  end
+end
+
+puts output.join
